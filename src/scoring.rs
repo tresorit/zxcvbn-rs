@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::cmp;
+#[cfg(feature = "time")]
 use time;
 use matching::{Match, MatchBuilder};
 use matching::patterns::*;
@@ -29,9 +30,16 @@ struct Optimal {
     g: Vec<HashMap<usize, u64>>,
 }
 
+#[cfg(feature = "time")]
 lazy_static! {
     #[doc(hidden)]
     pub static ref REFERENCE_YEAR: i16 = time::now_utc().tm_year as i16 + 1900;
+}
+
+#[cfg(not(feature = "time"))]
+lazy_static! {
+    #[doc(hidden)]
+    pub static ref REFERENCE_YEAR: i16 = 2018;
 }
 const MIN_YEAR_SPACE: i16 = 20;
 const BRUTEFORCE_CARDINALITY: u64 = 10;

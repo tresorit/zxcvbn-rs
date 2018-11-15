@@ -878,6 +878,7 @@ mod tests {
     use matching::Matcher;
     use matching::patterns::*;
     use std::collections::HashMap;
+    #[cfg(feature = "time")]
     use time;
 
     #[test]
@@ -1444,6 +1445,7 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "time")]
     #[test]
     fn test_date_matches_year_closest_to_reference_year() {
         let password = format!("1115{}", time::now_utc().tm_year % 100);

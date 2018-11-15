@@ -19,7 +19,6 @@ itertools = "0.7.0"
 lazy_static = "1.0.0"
 quick-error = "1.2.0"
 regex = "1.0.0"
-time = "0.1.35"
 
 [dependencies.clippy]
 optional = true
@@ -33,12 +32,16 @@ version = "1.0.0"
 optional = true
 version = "1.0.0"
 
+[dependencies.time]
+optional = true
+version = "0.1.35"
+
 [dev-dependencies]
 quickcheck = "0.6.0"
 serde_json = "1.0.21"
 
 [features]
-default = []
+default = ["time"]
 dev = ["clippy", "unstable"]
 ser = ["serde", "serde_derive"]
 unstable = ["lazy_static/nightly"]

@@ -29,6 +29,7 @@ extern crate serde;
 #[cfg(feature = "ser")]
 #[macro_use]
 extern crate serde_derive;
+#[cfg(feature = "time")]
 extern crate time;
 
 #[cfg(test)]
@@ -82,6 +83,16 @@ quick_error! {
     }
 }
 
+#[cfg(feature = "time")]
+fn precise_time_ns() -> u64 {
+    time::precise_time_ns()
+}
+
+#[cfg(not(feature = "time"))]
+fn precise_time_ns() -> u64 {
+    0
+}
+
 /// Takes a password string and optionally a list of user-supplied inputs
 /// (e.g. username, email, first name) and calculates the strength of the password
 /// based on entropy, using a number of different factors.
@@ -95,7 +106,7 @@ pub fn zxcvbn(password: &str, user_inputs: &[&str]) -> Result<Entropy, ZxcvbnErr
         return Err(ZxcvbnError::BlankPassword);
     }
 
-    let start_time_ns = time::precise_time_ns();
+    let start_time_ns = precise_time_ns();
 
     // Only evaluate the first 100 characters of the input.
     // This prevents potential DoS attacks from sending extremely long input strings.
@@ -109,7 +120,7 @@ pub fn zxcvbn(password: &str, user_inputs: &[&str]) -> Result<Entropy, ZxcvbnErr
 
     let matches = matching::omnimatch(&password, &sanitized_inputs);
     let result = scoring::most_guessable_match_sequence(&password, &matches, false);
-    let calc_time = (time::precise_time_ns() - start_time_ns) / 1_000_000;
+    let calc_time = (precise_time_ns() - start_time_ns) / 1_000_000;
     let (attack_times, attack_times_display, score) =
         time_estimates::estimate_attack_times(result.guesses);
     let feedback = feedback::get_feedback(score, &matches);
